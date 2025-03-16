@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react'; 
+import './App.css'; 
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+function App() { 
+  const [user, setUser] = useState(null); 
+  const [isLoaded, setIsLoaded] = useState(false); 
+  const [error, setError] = useState(null); 
+  useEffect(() => { 
+    fetch("https://jsonplaceholder.typicode.com/users/1") 
+    .then(res => res.json()) 
+    .then(data => { 
+      console.log('取得データ', data); 
+      setUser(data); 
+      setIsLoaded(true); 
+    }) 
+    .catch(err => { 
+      console.log('エラー発生', err); 
+      setIsLoaded(true); 
+      setError(err); 
+    }); 
+  }, []) 
+  if (error) { return (<div>Error: {error.message}</div>); } 
+  else if(!isLoaded) { return (<div>Now Loading...</div>); } 
+  else { return (<div style={{padding:10}}> <p>{ user && user.name }</p></div>); } 
+} 
 
 export default App;
